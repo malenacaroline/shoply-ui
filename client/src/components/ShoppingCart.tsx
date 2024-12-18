@@ -21,22 +21,22 @@ const initialProducts: Product[] = [
   {
     id: 1,
     name: "T-Shirt",
-    price: 19.99,
+    price: 35.99,
     image: "shopping-bag.jpg",
   },
   {
     id: 2,
     name: "Jeans",
-    price: 49.99,
+    price: 65.50,
     image: "shopping-bag.jpg",
   },
   {
     id: 3,
-    name: "Sneakers",
-    price: 79.99,
+    name: "Dress",
+    price: 80.75,
     image: "shopping-bag.jpg",
   },
-  {
+  { 
     id: 4,
     name: "Hat",
     price: 14.99,
@@ -92,8 +92,6 @@ export default function ShoppingCart() {
     return item ? item.quantity : 0;
   };
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
   return (
     <Grid container spacing={4}>
       <Grid item xs={12} md={8}>
@@ -115,7 +113,6 @@ export default function ShoppingCart() {
       </Grid>
       <Grid item xs={12} md={4}>
         <ShoppingSummary
-          total={total}
           cart={cart}
           removeFromCart={removeFromCart}
         />
