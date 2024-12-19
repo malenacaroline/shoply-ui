@@ -1,28 +1,37 @@
-import { useState } from 'react'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
-import Container from '@mui/material/Container'
-import ShoppingCart from './components/ShoppingCart'
-import Box from '@mui/material/Box'
-import Header from './components/Header'
-import Footer from './components/Footer'
+import { useState } from "react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { CssBaseline, Box, Container } from "@mui/material";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Login from "./components/Login";
 
-const theme = createTheme()
-function App() {
-  const [cartItemCount, setCartItemCount] = useState(0)
+const theme = createTheme();
+
+function MainContent() {
+  const [cartItemCount, setCartItemCount] = useState(0);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Header cartItemCount={cartItemCount} />
-        <Container component="main" maxWidth="lg" sx={{ flexGrow: 1, py: 4 }}>
-          <ShoppingCart />
-        </Container>
-        <Footer />
-      </Box>
-    </ThemeProvider>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <Header cartItemCount={cartItemCount} />
+      <Container component="main" maxWidth="lg" sx={{ flexGrow: 1, py: 4 }}>
+        <Login />
+      </Container>
+      <Footer />
+    </Box>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AuthProvider>
+        <Router>
+          <MainContent />
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}

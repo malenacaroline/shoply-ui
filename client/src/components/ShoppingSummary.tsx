@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -21,15 +21,15 @@ type User = {
   discount: DiscountType[];
 };
 
-const user: User = {
-type: "VIP",
-discount: ["get3For2Discount", "vipDiscount"],
-};
-
 // const user: User = {
-//   type: "common",
-//   discount: ["get3For2Discount"],
+// type: "VIP",
+// discount: ["get3For2Discount", "vipDiscount"],
 // };
+
+const user: User = {
+  type: "common",
+  discount: ["get3For2Discount"],
+};
 
 type CartTotal = {
   subTotal: number;
@@ -140,7 +140,7 @@ export default function ShoppingSummary({
                     {`$${(item.price * item.quantity).toFixed(2)}`}
                   </Typography>
                 </ListItem>
-              ))}{" "}
+              ))}
             </List>
             <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: "divider" }}>
               <Typography
@@ -166,7 +166,7 @@ export default function ShoppingSummary({
                 <span>Total</span>
                 <span>${(cartTotal.subTotal - (discountType ? cartTotal[discountType] : 0)).toFixed(2)}</span>
               </Total>
-              {discountType && (
+              {user.type === "VIP" && discountType && (
                 <Typography
                   variant="subtitle2"
                   sx={{
