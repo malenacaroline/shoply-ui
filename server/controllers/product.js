@@ -1,10 +1,7 @@
 const db = require("../models");
-require("dotenv").config();
 
-exports.showAll = async (req, res) => {
-  const data = await db.product.findAll({
-    attributes: { exclude: ["createdAt", "updatedAt"] },
-  });
+exports.getAll = async (req, res) => {
+  const data = await db.Product.findAll();
   if (!data) {
     res.send("No results found");
   } else {
@@ -12,9 +9,9 @@ exports.showAll = async (req, res) => {
   }
 };
 
-exports.showOne = async (req, res) => {
+exports.getOne = async (req, res) => {
   const id = req.params.id;
-  const data = await db.product.findByPk(id);
+  const data = await db.Product.findByPk(id);
   if (data === null) {
     res.status(400).send("Not found!");
   } else {
@@ -22,15 +19,15 @@ exports.showOne = async (req, res) => {
   }
 };
 
-exports.createRecord = async (req, res) => {
+exports.create = async (req, res) => {
   try {
-    const check = await db.product.findOne({
+    const check = await db.Product.findOne({
       where: getComparator(db, "name", req.body.name),
     });
     if (check) {
       return res.send(`${req.body.name} already exists.`);
     }
-    const data = await db.product.create(req.body);
+    const data = await db.Product.create(req.body);
     res.status(201).json({ data });
   } catch (err) {
     console.log(err);
@@ -38,10 +35,10 @@ exports.createRecord = async (req, res) => {
   }
 };
 
-exports.updateRecord = async (req, res) => {
+exports.update = async (req, res) => {
   const updatedData = req.body;
   try {
-    const data = await db.product.findByPk(updatedData.id);
+    const data = await db.Product.findByPk(updatedData.id);
     data.set(updatedData);
     await data.save();
     res.status(200).json({ message: data });
@@ -51,10 +48,10 @@ exports.updateRecord = async (req, res) => {
   }
 };
 
-exports.deleteRecord = async (req, res) => {
+exports.delete = async (req, res) => {
   const id = req.params.id;
   try {
-    const count = await db.product.destroy({
+    const count = await db.Product.destroy({
       where: { id: id },
     });
     if (count == 1) {

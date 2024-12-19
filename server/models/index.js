@@ -26,7 +26,14 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// Require the models
-db.product = require("./product")(sequelize, Sequelize);
+db.User = require('./user')(sequelize, Sequelize);
+db.Product = require('./product')(sequelize, Sequelize);
+db.Cart = require('./cart')(sequelize, Sequelize);
+
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
 
 module.exports = db;

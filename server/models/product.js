@@ -19,8 +19,8 @@ module.exports = (sequelize, Sequelize) => {
     },
     {
       sequelize,
-      tableName: "products", // Use plural for the database table name
-      timestamps: false, // Disable timestamps if you want to manage them manually
+      tableName: "products",
+      timestamps: false,
     }
   );
 };
