@@ -8,7 +8,6 @@ import { Product } from "../types";
 import { styled } from "@mui/material/styles";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import Badge from "@mui/material/Badge";
 
 export interface CartItem extends Product {
   quantity: number;
@@ -26,8 +25,6 @@ export default function ShoppingCart() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [cart, setCart] = useState<CartItem[]>([]);
-
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -116,18 +113,6 @@ export default function ShoppingCart() {
   return (
     <Grid container spacing={4}>
       <Grid item xs={12} md={8}>
-        <Box sx={{display: "flex", alignItems: "center"}}>
-          <Typography variant="body1" color="textSecondary">
-            Hello, {user.name}
-          </Typography>
-          {user.type === "vip" && (
-            <Badge
-              badgeContent="VIP"
-              color="primary"
-              sx={{ marginLeft: "24px" }}
-            />
-          )}
-        </Box>
         <PageTitle>Products</PageTitle>
       </Grid>
       <Grid item xs={12} md={8}>

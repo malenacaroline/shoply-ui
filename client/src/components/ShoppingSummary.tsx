@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
+import { Typography, Stack, Chip } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -13,6 +13,7 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import { Product } from "../types";
 import { CartItem } from "./ShoppingCart";
+import { useAuth } from "../contexts/AuthContext";
 
 type DiscountType = "get3For2Discount" | "vipDiscount";
 type UserType = "VIP" | "common";
@@ -81,6 +82,8 @@ export default function ShoppingSummary({
   cart: CartItem[];
   removeFromCart: (item: Product) => void;
 }) {
+  const { isAuthenticated } = useAuth();
+  const localUser = JSON.parse(localStorage.getItem("user") ?? "null");
 
   const cartTotal = useMemo<CartTotal>(() => {
     const subTotal = cart.reduce(
@@ -106,11 +109,22 @@ export default function ShoppingSummary({
     }, null as DiscountType | null);
   }, [cartTotal, user]);
 
-
   return (
     <Card>
       <CardContent>
-        <SummaryTitle>Order Summary</SummaryTitle>
+        <Stack justifyContent="space-between" direction="row" alignItems="start">
+          <SummaryTitle>
+            Order Summary
+          </SummaryTitle>
+            {isAuthenticated && localUser.type === "vip" && (
+              <Chip
+                label="VIP Member"
+                color="secondary"
+                size="small"
+                sx={{ marginLeft: "24px" }}
+              />
+            )}
+        </Stack>
         {cart.length === 0 ? (
           <Typography>Your cart is empty</Typography>
         ) : (
@@ -151,20 +165,30 @@ export default function ShoppingSummary({
                 <span>Subtotal</span>
                 <span>${cartTotal.subTotal.toFixed(2)}</span>
               </Typography>
-              {discountType && cartTotal[discountType] > 0 && <Typography
-                variant="subtitle2"
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  color: "#169b24",
-                }}
-              >
-                <span>Discount</span>
-                <span>{`- $${cartTotal[discountType].toFixed(2)} (${discountTypes[discountType]})`}</span>
-              </Typography>}
+              {discountType && cartTotal[discountType] > 0 && (
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    color: "#169b24",
+                  }}
+                >
+                  <span>Discount</span>
+                  <span>{`- $${cartTotal[discountType].toFixed(2)} (${
+                    discountTypes[discountType]
+                  })`}</span>
+                </Typography>
+              )}
               <Total sx={{ display: "flex", justifyContent: "space-between" }}>
                 <span>Total</span>
-                <span>${(cartTotal.subTotal - (discountType ? cartTotal[discountType] : 0)).toFixed(2)}</span>
+                <span>
+                  $
+                  {(
+                    cartTotal.subTotal -
+                    (discountType ? cartTotal[discountType] : 0)
+                  ).toFixed(2)}
+                </span>
               </Total>
               {user.type === "VIP" && discountType && (
                 <Typography
