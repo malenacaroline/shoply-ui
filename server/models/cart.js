@@ -11,40 +11,31 @@ module.exports = (sequelize, Sequelize) => {
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id'
-        }
       },
-      productId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'products',
-          key: 'id'
-        }
+      status: {
+        type: Sequelize.ENUM('active', 'completed'),
+        defaultValue: 'active'
       },
-      quantity: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 1,
-      },
+      total: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      }
     },
     {
       sequelize,
       tableName: "carts",
-      timestamps: false,
+      timestamps: true,
     }
   );
 
-  Cart.associate = (models) => {
+  Cart.associate = function(models) {
     Cart.belongsTo(models.User, {
       foreignKey: 'userId',
       as: 'user'
     });
-    Cart.belongsTo(models.Product, {
-      foreignKey: 'productId',
-      as: 'product'
+    Cart.hasMany(models.CartItem, {
+      foreignKey: 'cartId',
+      as: 'items'
     });
   };
 

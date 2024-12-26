@@ -12,25 +12,17 @@ const sequelize = new Sequelize(
   }
 );
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connection successful");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-
 const db = {};
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.User = require('./user')(sequelize, Sequelize);
-db.Product = require('./product')(sequelize, Sequelize);
-db.Cart = require('./cart')(sequelize, Sequelize);
+db.User = require("./user")(sequelize, Sequelize);
+db.Product = require("./product")(sequelize, Sequelize);
+db.Cart = require("./cart")(sequelize, Sequelize);
+db.CartItem = require("./cartItem")(sequelize, Sequelize);
 
-Object.keys(db).forEach(modelName => {
+Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
