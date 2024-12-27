@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -11,15 +9,15 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import { useAuth } from "../contexts/AuthContext";
+import { Close as CloseIcon } from "@mui/icons-material";
+import { useAuth } from "../contexts";
 
 interface LoginFormProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function LoginForm({ isOpen, onClose }: LoginFormProps) {
+export const LoginForm = ({ isOpen, onClose }: LoginFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, loginError } = useAuth();
@@ -50,7 +48,7 @@ export default function LoginForm({ isOpen, onClose }: LoginFormProps) {
       <form onSubmit={handleSubmit}>
         <DialogContent>
           {loginError && (
-            <Alert severity="error" sx={{ mb: 2}}>
+            <Alert severity="error" sx={{ mb: 2 }}>
               {loginError}
             </Alert>
           )}
@@ -85,4 +83,4 @@ export default function LoginForm({ isOpen, onClose }: LoginFormProps) {
       </form>
     </Dialog>
   );
-}
+};

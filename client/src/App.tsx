@@ -1,10 +1,7 @@
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline, Box, Container } from "@mui/material";
-import { AuthProvider } from "./contexts/AuthContext";
-import { CartProvider } from "./contexts/CartContext";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import ShoppingCart from "./components/ShoppingCart";
+import { AuthProvider, CartProvider } from "./contexts";
+import { Header, ShoppingCart, Footer } from "./components";
 
 const theme = createTheme();
 

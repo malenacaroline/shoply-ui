@@ -1,23 +1,12 @@
 import { useState, useEffect } from "react";
-import axiosInstance from "../utils/axiosConfig";
+import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import Typography from "@mui/material/Typography";
-import ShoppingSummary from "./ShoppingSummary";
-import { ProductItem } from "./ProductItem";
-import { Product } from "../types";
-import { styled } from "@mui/material/styles";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import { brown } from "@mui/material/colors";
-import { Stack } from "@mui/material";
+import axiosInstance from "../utils/axiosConfig";
+import { ShoppingSummary, ProductItem } from "./index";
+import { Product } from "../types";
 
-const PageTitle = styled(Typography)({
-  fontWeight: "bold",
-  fontSize: "1.5rem",
-  fontFamily: "Montserrat, sans-serif",
-});
-
-export default function ShoppingCart() {
+export const ShoppingCart = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -75,7 +64,9 @@ export default function ShoppingCart() {
 
   return (
     <Stack spacing={2}>
-      <PageTitle color={brown[600]}>Products</PageTitle>
+      <Typography variant="h5" fontWeight="600" color={brown[600]}>
+        Products
+      </Typography>
       <Grid
         container
         spacing={4}
@@ -84,7 +75,7 @@ export default function ShoppingCart() {
         <Grid size={{ xs: 12, md: 8 }}>
           <Grid container spacing={2}>
             {products.map((product) => (
-              <Grid key={product.id} size={{ xs: 12, sm:6, md: 4 }}>
+              <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
                 <ProductItem key={product.id} item={product} />
               </Grid>
             ))}
@@ -96,4 +87,4 @@ export default function ShoppingCart() {
       </Grid>
     </Stack>
   );
-}
+};

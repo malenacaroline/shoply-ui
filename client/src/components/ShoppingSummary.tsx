@@ -1,25 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import {
-  Typography,
-  Stack,
+  Avatar,
+  Box,
+  Card,
+  CardContent,
   Chip,
-  RadioGroup,
   FormControlLabel,
-  Radio,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
   Paper,
+  Radio,
+  RadioGroup,
+  Stack,
+  Typography,
 } from "@mui/material";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import { Cart, DiscountType, CartItem, UserType } from "../types";
-import { useAuth } from "../contexts/AuthContext";
-import { useCart } from "../contexts/CartContext";
 import { brown, green, red } from "@mui/material/colors";
+import { Cart, DiscountType, CartItem, UserType } from "../types";
+import { useAuth, useCart } from "../contexts";
 
 type DiscountTotal = Record<DiscountType, number>;
 
@@ -45,7 +44,7 @@ const discountLabels = {
   [DiscountType.GET_3_FOR_2_DISCOUNT]: "Get 3 for 2",
 };
 
-export default function ShoppingSummary() {
+export const ShoppingSummary = () => {
   const { user } = useAuth();
   const { cart } = useCart();
 
@@ -92,7 +91,7 @@ export default function ShoppingSummary() {
           direction="row"
           alignItems="start"
         >
-          <Typography fontWeight="600" color={brown[700]} fontSize="large">
+          <Typography fontWeight="600" color={brown[700]} fontSize="medium">
             Order Summary
           </Typography>
           {user?.type === UserType.VIP && (
@@ -104,10 +103,14 @@ export default function ShoppingSummary() {
             />
           )}
         </Stack>
-        {!cart ? (
+        {!cart || cart.items.length === 0 ? (
           <Stack>
-            <Typography color="text.secondary">
-              Login to add products in your cart.
+            <Typography color="text.secondary" sx={{ mt: 2 }}>
+              {`${
+                !user
+                  ? "Login to add products in your cart."
+                  : "Your cart is empty."
+              } `}
             </Typography>
           </Stack>
         ) : (
@@ -124,7 +127,11 @@ export default function ShoppingSummary() {
                       primary={item.product.name}
                       secondary={`$${item.price.toFixed(2)} x ${item.quantity}`}
                     />
-                    <Typography variant="subtitle1" fontWeight="600" color={brown[800]}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight="600"
+                      color={brown[800]}
+                    >
                       {`$${item.subtotal.toFixed(2)}`}
                     </Typography>
                   </ListItem>
@@ -150,28 +157,29 @@ export default function ShoppingSummary() {
                   }}
                 >
                   <Typography variant="subtitle1">
-                    Discount (${discountLabels[selectedDiscount]})
+                    Discount ({discountLabels[selectedDiscount]})
                   </Typography>
                   <Typography variant="subtitle1">{`- $${discountTotal[
                     selectedDiscount
                   ].toFixed(2)}`}</Typography>
                 </Typography>
               )}
-              <Typography
-                variant="h6"
-                fontWeight="600"
-                color={red[900]}
-                sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                sx={{ mt: 2 }}
               >
-                <span>Total</span>
-                <span>
+                <Typography variant="h6" color={red[900]} fontWeight="600">
+                  Total
+                </Typography>
+                <Typography variant="h6" color={red[900]} fontWeight="600">
                   $
                   {(
                     cart.total -
                     (selectedDiscount ? discountTotal[selectedDiscount] : 0)
                   ).toFixed(2)}
-                </span>
-              </Typography>
+                </Typography>
+              </Stack>
               {user?.type === UserType.VIP && user.discounts.length > 0 && (
                 <Stack
                   spacing={1}
@@ -208,7 +216,7 @@ export default function ShoppingSummary() {
                           }}
                           control={<Radio color="secondary" size="small" />}
                           label={`Use ${discountLabels[discount]}${
-                            selectedDiscount === discount
+                            recommendedDiscount === discount
                               ? " (Recommended)"
                               : ""
                           }`}
@@ -224,4 +232,4 @@ export default function ShoppingSummary() {
       </CardContent>
     </Card>
   );
-}
+};

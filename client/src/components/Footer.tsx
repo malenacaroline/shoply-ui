@@ -1,8 +1,7 @@
-import Box from "@mui/material/Box";
+import { Box, Typography } from "@mui/material";
 import { brown, grey } from "@mui/material/colors";
-import Typography from "@mui/material/Typography";
 
-export default function Footer() {
+export const Footer = () => {
   return (
     <Box
       component="footer"

@@ -36,7 +36,6 @@ export interface CartItem {
 export interface Cart {
   id: number;
   userId: number;
-  status: string;
   total: number;
   createdAt: string;
   updatedAt: string;

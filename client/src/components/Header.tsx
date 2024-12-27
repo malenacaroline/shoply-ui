@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { AppBar, Toolbar, Typography, Button, Stack } from "@mui/material";
-import { useAuth } from "../contexts/AuthContext";
-import LoginForm from "./LoginForm";
 import { AccountCircle, Store } from "@mui/icons-material";
 import { orange } from "@mui/material/colors";
+import { useAuth } from "../contexts";
+import { LoginForm } from "./index";
 
-export default function Header() {
+export const Header = () => {
   const { user, logout, setLoginError } = useAuth();
   const [showLoginForm, setShowLoginForm] = useState(false);
 
@@ -27,11 +27,14 @@ export default function Header() {
           <Stack direction="row" spacing={4} alignItems="center">
             <Stack direction="row" spacing={1} alignItems="center">
               <AccountCircle />
-              <Typography sx={{ fontWeight: "bold" }}>
-                {user.name}
-              </Typography>
+              <Typography sx={{ fontWeight: "bold" }}>{user.name}</Typography>
             </Stack>
-            <Button color="inherit" variant="outlined" size="small" onClick={logout}>
+            <Button
+              color="inherit"
+              variant="outlined"
+              size="small"
+              onClick={logout}
+            >
               Logout
             </Button>
           </Stack>
@@ -48,4 +51,4 @@ export default function Header() {
       </Toolbar>
     </AppBar>
   );
-}
+};
