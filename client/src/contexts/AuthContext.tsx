@@ -1,21 +1,22 @@
-import { createContext, useContext, useState, useMemo, useEffect } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import { loginApi } from "../api/login";
 import { AxiosError } from "axios";
+import { User } from "../types";
 
 interface AuthContextType {
-  isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   loginError: string | null;
   setLoginError: (error: string | null) => void;
+  user: User | null;
 }
 
 const AuthContext = createContext<AuthContextType>({
-  isAuthenticated: false,
   login: async () => {},
   logout: () => {},
   loginError: null,
   setLoginError: () => null,
+  user: null,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -23,31 +24,21 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (user) {
-      setIsAuthenticated(true);
-    }
-  }, []);
+  const [user, setUser] = useState<User | null>(
+    JSON.parse(localStorage.getItem("user") ?? "null")
+  );
 
   const login = async (email: string, password: string) => {
-    console.log("hello");
     setLoginError(null);
-    console.log("loginError", loginError);
     try {
       const response = await loginApi(email, password);
-      console.log(response, response)
       if (response.user) {
+        setUser(response.user);
         localStorage.setItem("user", JSON.stringify(response.user));
-        setIsAuthenticated(true);
       }
     } catch (error) {
-      console.log("error", error);
       if (error instanceof AxiosError) {
-        console.log("error.response", error.response);
         setLoginError(error.response?.data.message);
       } else {
         setLoginError("An unexpected error occurred");
@@ -57,18 +48,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = () => {
     localStorage.removeItem("user");
-    setIsAuthenticated(false);
+    setUser(null);
+    setLoginError(null);
   };
 
   const value = useMemo(
     () => ({
-      isAuthenticated,
+      user,
       login,
       logout,
       loginError,
-      setLoginError
+      setLoginError,
     }),
-    [isAuthenticated, loginError]
+    [user, loginError]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

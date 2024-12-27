@@ -1,60 +1,29 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { Typography, Stack, Chip } from "@mui/material";
+import {
+  Typography,
+  Stack,
+  Chip,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Paper,
+} from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Box from "@mui/material/Box";
-import { styled } from "@mui/material/styles";
-import { Product } from "../types";
-import { CartItem } from "./ShoppingCart";
+import { Cart, DiscountType, CartItem, UserType } from "../types";
 import { useAuth } from "../contexts/AuthContext";
+import { useCart } from "../contexts/CartContext";
+import { brown, green, red } from "@mui/material/colors";
 
-type DiscountType = "get3For2Discount" | "vipDiscount";
-type UserType = "VIP" | "common";
-type User = {
-  type: UserType;
-  discount: DiscountType[];
-};
+type DiscountTotal = Record<DiscountType, number>;
 
-// const user: User = {
-// type: "VIP",
-// discount: ["get3For2Discount", "vipDiscount"],
-// };
-
-const user: User = {
-  type: "common",
-  discount: ["get3For2Discount"],
-};
-
-type CartTotal = {
-  subTotal: number;
-  get3For2Discount: number;
-  vipDiscount: number;
-};
-
-const SummaryTitle = styled(Typography)({
-  fontWeight: "600",
-  fontSize: "1rem",
-  marginBottom: "1rem",
-  color: "#3a3a3a",
-  fontFamily: "Montserrat, sans-serif",
-});
-
-const Total = styled(Typography)({
-  fontWeight: "600",
-  fontSize: "1rem",
-  margin: "1rem 0",
-  color: "#e65a5a",
-  fontFamily: "Montserrat, sans-serif",
-});
-
-const calculateGet3For2Discount = (cart: CartItem[]) => {
+const calculateGet3For2Discount = (cart: Cart["items"]) => {
   const numCartItems = cart.reduce(
     (totalQuantity, item) => totalQuantity + item.quantity,
     0
@@ -71,138 +40,186 @@ const calculateGet3For2Discount = (cart: CartItem[]) => {
   return lowestPriceItem ? lowestPriceItem.price : 0;
 };
 
-const discountTypes = {
-  vipDiscount: "15% off",
-  get3For2Discount: "Get 3 for 2",
+const discountLabels = {
+  [DiscountType.VIP_DISCOUNT]: "15% off",
+  [DiscountType.GET_3_FOR_2_DISCOUNT]: "Get 3 for 2",
 };
-export default function ShoppingSummary({
-  cart,
-  removeFromCart,
-}: {
-  cart: CartItem[];
-  removeFromCart: (item: Product) => void;
-}) {
-  const { isAuthenticated } = useAuth();
-  const localUser = JSON.parse(localStorage.getItem("user") ?? "null");
 
-  const cartTotal = useMemo<CartTotal>(() => {
-    const subTotal = cart.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    const vipDiscount = subTotal * 0.15;
-    const get3For2Discount = calculateGet3For2Discount(cart);
+export default function ShoppingSummary() {
+  const { user } = useAuth();
+  const { cart } = useCart();
+
+  const [selectedDiscount, setSelectedDiscount] = useState<DiscountType | null>(
+    null
+  );
+
+  const discountTotal = useMemo<DiscountTotal>(() => {
+    if (!cart || !user) return { get3For2Discount: 0, vipDiscount: 0 };
+    const vipDiscount = user.discounts.includes(DiscountType.VIP_DISCOUNT)
+      ? cart.total * 0.15
+      : 0;
+    const get3For2Discount = calculateGet3For2Discount(cart.items);
 
     return {
-      subTotal,
       get3For2Discount,
       vipDiscount,
     };
   }, [cart, user]);
 
-  const discountType = useMemo(() => {
-    return user.discount.reduce((currentDiscount, discountType) => {
+  const recommendedDiscount = useMemo(() => {
+    if (!user) return null;
+    return user.discounts.reduce((currentDiscount, discountType) => {
       if (!currentDiscount) return discountType;
-      return cartTotal[discountType] > cartTotal[currentDiscount]
+      return discountTotal[discountType] > discountTotal[currentDiscount]
         ? discountType
         : currentDiscount;
     }, null as DiscountType | null);
-  }, [cartTotal, user]);
+  }, [discountTotal, user]);
+
+  useEffect(() => {
+    setSelectedDiscount(recommendedDiscount);
+  }, [recommendedDiscount]);
+
+  const handleDiscountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedDiscount(event.target.value as DiscountType);
+  };
 
   return (
     <Card>
       <CardContent>
-        <Stack justifyContent="space-between" direction="row" alignItems="start">
-          <SummaryTitle>
+        <Stack
+          justifyContent="space-between"
+          direction="row"
+          alignItems="start"
+        >
+          <Typography fontWeight="600" color={brown[700]} fontSize="large">
             Order Summary
-          </SummaryTitle>
-            {isAuthenticated && localUser.type === "vip" && (
-              <Chip
-                label="VIP Member"
-                color="secondary"
-                size="small"
-                sx={{ marginLeft: "24px" }}
-              />
-            )}
+          </Typography>
+          {user?.type === UserType.VIP && (
+            <Chip
+              label="VIP Member"
+              color="secondary"
+              size="small"
+              sx={{ marginLeft: "24px" }}
+            />
+          )}
         </Stack>
-        {cart.length === 0 ? (
-          <Typography>Your cart is empty</Typography>
+        {!cart ? (
+          <Stack>
+            <Typography color="text.secondary">
+              Login to add products in your cart.
+            </Typography>
+          </Stack>
         ) : (
-          <>
+          <Stack>
             <List>
-              {cart.map((item, index) => (
-                <ListItem
-                  key={index}
-                  secondaryAction={
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => removeFromCart(item)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                >
-                  <ListItemAvatar>
-                    <Avatar src={item.image} alt={item.name} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={item.name}
-                    secondary={`$${item.price.toFixed(2)} x ${item.quantity}`}
-                  />
-                  <Typography variant="body1" sx={{ mr: 2, fontWeight: "600" }}>
-                    {`$${(item.price * item.quantity).toFixed(2)}`}
-                  </Typography>
-                </ListItem>
-              ))}
+              {cart?.items.map((item) => {
+                if (item.quantity === 0) return null;
+                return (
+                  <ListItem key={item.id}>
+                    <ListItemAvatar>
+                      <Avatar src="shopping-bag.jpg" alt={item.product.name} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={item.product.name}
+                      secondary={`$${item.price.toFixed(2)} x ${item.quantity}`}
+                    />
+                    <Typography variant="subtitle1" fontWeight="600" color={brown[800]}>
+                      {`$${item.subtotal.toFixed(2)}`}
+                    </Typography>
+                  </ListItem>
+                );
+              })}
             </List>
-            <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: "divider" }}>
+            <Box sx={{ mt: 2 }}>
               <Typography
-                variant="subtitle1"
+                variant="subtitle2"
                 color="text.secondary"
                 sx={{ display: "flex", justifyContent: "space-between" }}
               >
-                <span>Subtotal</span>
-                <span>${cartTotal.subTotal.toFixed(2)}</span>
+                <Typography variant="subtitle1">Subtotal</Typography>
+                <Typography>${cart?.total.toFixed(2)}</Typography>
               </Typography>
-              {discountType && cartTotal[discountType] > 0 && (
+              {selectedDiscount && discountTotal[selectedDiscount] > 0 && (
                 <Typography
                   variant="subtitle2"
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
-                    color: "#169b24",
+                    color: green[600],
                   }}
                 >
-                  <span>Discount</span>
-                  <span>{`- $${cartTotal[discountType].toFixed(2)} (${
-                    discountTypes[discountType]
-                  })`}</span>
+                  <Typography variant="subtitle1">
+                    Discount (${discountLabels[selectedDiscount]})
+                  </Typography>
+                  <Typography variant="subtitle1">{`- $${discountTotal[
+                    selectedDiscount
+                  ].toFixed(2)}`}</Typography>
                 </Typography>
               )}
-              <Total sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography
+                variant="h6"
+                fontWeight="600"
+                color={red[900]}
+                sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}
+              >
                 <span>Total</span>
                 <span>
                   $
                   {(
-                    cartTotal.subTotal -
-                    (discountType ? cartTotal[discountType] : 0)
+                    cart.total -
+                    (selectedDiscount ? discountTotal[selectedDiscount] : 0)
                   ).toFixed(2)}
                 </span>
-              </Total>
-              {user.type === "VIP" && discountType && (
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
+              </Typography>
+              {user?.type === UserType.VIP && user.discounts.length > 0 && (
+                <Stack
+                  spacing={1}
+                  sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: "divider" }}
                 >
-                  <span>Recomendation: {discountTypes[discountType]}</span>
-                </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    color={brown[700]}
+                    fontWeight="600"
+                  >
+                    Available Discounts
+                  </Typography>
+                  <Paper
+                    variant="outlined"
+                    sx={{
+                      p: 1,
+                    }}
+                  >
+                    <RadioGroup
+                      aria-label="discount-recommendation"
+                      name="discount-recommendation"
+                      value={selectedDiscount}
+                      onChange={handleDiscountChange}
+                    >
+                      {user.discounts.map((discount) => (
+                        <FormControlLabel
+                          key={discount}
+                          value={discount}
+                          slotProps={{
+                            typography: {
+                              variant: "body2",
+                              color: "text.secondary",
+                            },
+                          }}
+                          control={<Radio color="secondary" size="small" />}
+                          label={`Use ${discountLabels[discount]}${
+                            selectedDiscount === discount
+                              ? " (Recommended)"
+                              : ""
+                          }`}
+                        />
+                      ))}
+                    </RadioGroup>
+                  </Paper>
+                </Stack>
               )}
             </Box>
-          </>
+          </Stack>
         )}
       </CardContent>
     </Card>

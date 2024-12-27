@@ -1,6 +1,7 @@
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline, Box, Container } from "@mui/material";
 import { AuthProvider } from "./contexts/AuthContext";
+import { CartProvider } from "./contexts/CartContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ShoppingCart from "./components/ShoppingCart";
@@ -24,7 +25,9 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
-        <MainContent />
+        <CartProvider>
+          <MainContent />
+        </CartProvider>
       </AuthProvider>
     </ThemeProvider>
   );

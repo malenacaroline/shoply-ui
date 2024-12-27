@@ -1,13 +1,8 @@
+import { User } from "../types";
 import axiosInstance from "../utils/axiosConfig";
 
 interface LoginResponse {
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    type: string;
-    discounts: string[];
-  };
+  user: User;
 }
 
 export const loginApi = async (
