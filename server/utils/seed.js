@@ -4,18 +4,18 @@ const bcrypt = require("bcrypt");
 const seedDatabase = async () => {
   try {
     // Create users
-    const hashedPassword = await bcrypt.hash("password123", 10);
+    const hashedPassword = await bcrypt.hash("12345", 10);
     const users = await db.User.bulkCreate([
       {
         name: "John Doe",
-        email: "john@example.com",
+        email: "john@test.com",
         password: hashedPassword,
         type: "common",
         discounts: ["get3For2Discount"],
       },
       {
         name: "Jane Smith",
-        email: "jane@example.com",
+        email: "jane@test.com",
         password: hashedPassword,
         type: "vip",
         discounts: ["vipDiscount", "get3For2Discount"],

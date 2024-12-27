@@ -27,15 +27,17 @@ module.exports = (sequelize, Sequelize) => {
       quantity: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 1,
+        defaultValue: 0,
       },
       price: {
         type: Sequelize.FLOAT,
         allowNull: false,
+        defaultValue: 0,
       },
       subtotal: {
         type: Sequelize.FLOAT,
         allowNull: false,
+        defaultValue: 0,
       }
     },
     {

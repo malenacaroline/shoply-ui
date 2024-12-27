@@ -3,27 +3,16 @@ const bcrypt = require('bcrypt');
 
 exports.getAll = async (req, res) => {
   try {
-    const data = await db.User.findAll({
-      include: [{
-        model: db.Cart,
-        as: 'cart',
-        where: {
-          userId: {
-            [db.Sequelize.Op.eq]: db.Sequelize.col('user.id')
-          }
-        },
-        required: false
-      }]
-    });
-    
+    const data = await db.User.findAll();
+
     if (!data || data.length === 0) {
-      res.send("No results found");
+      res.status(404).send({ message: "No results found" });
     } else {
-      res.send(data);
+      res.status(200).send({ users: data });
     }
   } catch (err) {
     res.status(500).send({
-      message: err.message || "Error retrieving users with carts",
+      message: err.message || "Error retrieving users",
     });
   }
 };
