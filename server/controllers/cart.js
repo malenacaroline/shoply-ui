@@ -1,6 +1,6 @@
-const db = require("../models");
+import db from "../models/index.js";
 
-exports.getCartByUserId = async (req, res) => {
+export const getCartByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
 
@@ -41,7 +41,7 @@ exports.getCartByUserId = async (req, res) => {
   }
 };
 
-exports.updateItemQuantity = async (req, res) => {
+export const updateItemQuantity = async (req, res) => {
   try {
     const { cartId } = req.params;
     const { productId, action } = req.body;
@@ -86,7 +86,8 @@ exports.updateItemQuantity = async (req, res) => {
   }
 };
 
-async function updateCartTotal(cartId) {
+// Helper functions
+const updateCartTotal = async (cartId) => {
   const cart = await db.Cart.findByPk(cartId, {
     include: [
       {
@@ -104,9 +105,9 @@ async function updateCartTotal(cartId) {
 
   cart.total = parseFloat(total.toFixed(2));
   await cart.save();
-}
+};
 
-async function getCartWithItems(cartId) {
+const getCartWithItems = async (cartId) => {
   return db.Cart.findByPk(cartId, {
     include: [
       {
@@ -125,4 +126,4 @@ async function getCartWithItems(cartId) {
       },
     ],
   });
-}
+};

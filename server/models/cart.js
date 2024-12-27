@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+export default (sequelize, Sequelize) => {
   const Cart = sequelize.define(
     "cart",
     {
@@ -11,10 +11,6 @@ module.exports = (sequelize, Sequelize) => {
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      status: {
-        type: Sequelize.ENUM('active', 'completed'),
-        defaultValue: 'active'
       },
       total: {
         type: Sequelize.FLOAT,

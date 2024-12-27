@@ -1,9 +1,9 @@
-const db = require("../models");
-const bcrypt = require("bcrypt");
+import db from "../models/index.js";
+import bcrypt from "bcrypt";
+import user from "../models/user.js";
 
 const seedDatabase = async () => {
   try {
-    // Create users
     const hashedPassword = await bcrypt.hash("12345", 10);
     const users = await db.User.bulkCreate([
       {
@@ -23,35 +23,14 @@ const seedDatabase = async () => {
     ]);
 
     // Create products
-    const products = await db.Product.bulkCreate([
-      { name: "T-shirt", price: 35.99},
-      { name: "Jeans", price: 65.5},
-      { name: "Dress", price: 80.75},
+    await db.Product.bulkCreate([
+      { name: "T-shirt", price: 35.99, image: "shopping-bag.jpg" },
+      { name: "Jeans", price: 65.5, image: "shopping-bag.jpg" },
+      { name: "Dress", price: 80.75, image: "shopping-bag.jpg" },
     ]);
 
     // Create carts
-    const carts = await db.Cart.bulkCreate([
-      { userId: users[0].id, status: "active", total: 0 },
-      { userId: users[1].id, status: "active", total: 0 },
-    ]);
-
-    // Create cart items
-    await db.CartItem.bulkCreate([
-      {
-        cartId: carts[0].id,
-        productId: products[0].id,
-        quantity: 2,
-        price: products[0].price,
-        subtotal: products[0].price * 2,
-      },
-      {
-        cartId: carts[1].id,
-        productId: products[1].id,
-        quantity: 3,
-        price: products[1].price,
-        subtotal: products[1].price * 3,
-      },
-    ]);
+    await db.Cart.bulkCreate(users.map((user) => ({ userId: user.id })));
 
     console.log("Database seeded successfully");
   } catch (error) {
@@ -59,4 +38,4 @@ const seedDatabase = async () => {
   }
 };
 
-module.exports = seedDatabase;
+export default seedDatabase;

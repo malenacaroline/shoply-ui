@@ -1,6 +1,6 @@
-const controller = require("../controllers/cart");
+import * as controller from '../controllers/cart.js';
 
-module.exports = (router) => {
+export default (router) => {
   router.get('/carts/:userId', controller.getCartByUserId);
-  router.route("/carts/:cartId").post(controller.updateItemQuantity);
+  router.post('/carts/:cartId', controller.updateItemQuantity);
 };

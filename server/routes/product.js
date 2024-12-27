@@ -1,11 +1,5 @@
-const controller = require("../controllers/product");
+import * as controller from '../controllers/product.js';
 
-module.exports = (router) => {
-  router.route("/products").get(controller.getAll);
-  router.route("/products/:id").post(controller.getOne);
-  router.route("/products").post(controller.create);
-  router.route("/products").put(controller.update);
-  router.route("/products/:id").delete(controller.delete);
+export default (router) => {
+  router.get('/products', controller.getAll);
 };
-
-

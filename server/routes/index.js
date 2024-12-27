@@ -1,8 +1,8 @@
-const product = require("./product");
-const user = require("./user");
-const cart = require("./cart");
+import product from './product.js';
+import user from './user.js';
+import cart from './cart.js';
 
-module.exports = (router) => {
+export default (router) => {
   product(router);
   user(router);
   cart(router);

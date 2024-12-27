@@ -1,7 +1,7 @@
-const db = require('../models');
-const bcrypt = require('bcrypt');
+import db from '../models/index.js';
+import bcrypt from 'bcrypt';
 
-exports.getAll = async (req, res) => {
+export const getAll = async (req, res) => {
   try {
     const data = await db.User.findAll();
 
@@ -17,21 +17,7 @@ exports.getAll = async (req, res) => {
   }
 };
 
-exports.create = async (req, res) => {
-  try {
-    const { name, email, password, type, discounts } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("hashedPassword", hashedPassword);
-    const user = await db.User.create({ name, email, password: hashedPassword, type, discounts });
-    res.send(user);
-  } catch (err) {
-    res.status(500).send({
-      message: err.message || "Some error occurred while creating the User.",
-    });
-  }
-};
-
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await db.User.findOne({ where: { email } });

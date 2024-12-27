@@ -1,25 +1,25 @@
-const db = require("./models");
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const routes = require("./routes/index");
-const seedDatabase = require('./utils/seed');
-require("dotenv").config();
+import db from './models/index.js';
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import routes from './routes/index.js';
+import seedDatabase from './utils/seed.js';
+import { config } from 'dotenv';
 
+config();
 const app = express();
 const router = express.Router();
 
-app.use(cookieParser());
 
+app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin: "*",
     credentials: true,
   })
 );
-app.use(bodyParser.json());
-app.use(cookieParser());
 
 db.sequelize
   .sync({ force: true })
@@ -39,3 +39,5 @@ const HTTP_PORT = process.env.HTTP_PORT || 3002;
 app.listen(HTTP_PORT, () => {
   console.log(`Server ready at http://localhost:${HTTP_PORT}.`);
 });
+
+export default app;

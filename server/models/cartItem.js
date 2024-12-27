@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+export default (sequelize, Sequelize) => {
   const CartItem = sequelize.define(
     "cartItem",
     {
@@ -11,23 +11,15 @@ module.exports = (sequelize, Sequelize) => {
       cartId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'carts',
-          key: 'id'
-        }
       },
       productId: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'products',
-          key: 'id'
-        }
       },
       quantity: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: 1,
       },
       price: {
         type: Sequelize.FLOAT,
@@ -47,7 +39,7 @@ module.exports = (sequelize, Sequelize) => {
     }
   );
 
-  CartItem.associate = (models) => {
+  CartItem.associate = function(models) {
     CartItem.belongsTo(models.Cart, {
       foreignKey: 'cartId',
       as: 'cart'

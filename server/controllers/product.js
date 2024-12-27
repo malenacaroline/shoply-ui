@@ -1,71 +1,19 @@
-const db = require("../models");
+import db from "../models/index.js";
 
-exports.getAll = async (req, res) => {
-  const data = await db.Product.findAll();
-  if (!data) {
-    res.send("No results found");
-  } else {
-    res.send(data);
-  }
-};
-
-exports.getOne = async (req, res) => {
-  const id = req.params.id;
-  const data = await db.Product.findByPk(id);
-  if (data === null) {
-    res.status(400).send("Not found!");
-  } else {
-    res.status(200).send(data);
-  }
-};
-
-exports.create = async (req, res) => {
+export const getAll = async (req, res) => {
   try {
-    const check = await db.Product.findOne({
-      where: getComparator(db, "name", req.body.name),
-    });
-    if (check) {
-      return res.send(`${req.body.name} already exists.`);
-    }
-    const data = await db.Product.create(req.body);
-    res.status(201).json({ data });
-  } catch (err) {
-    console.log(err);
-    res.send({ message: "Failed!" });
-  }
-};
+    const products = await db.Product.findAll();
 
-exports.update = async (req, res) => {
-  const updatedData = req.body;
-  try {
-    const data = await db.Product.findByPk(updatedData.id);
-    data.set(updatedData);
-    await data.save();
-    res.status(200).json({ message: data });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ message: "Failed!" });
-  }
-};
-
-exports.delete = async (req, res) => {
-  const id = req.params.id;
-  try {
-    const count = await db.Product.destroy({
-      where: { id: id },
-    });
-    if (count == 1) {
-      res.send({
-        message: "Deleted successfully!",
-      });
-    } else {
-      res.send({
-        message: "Failed!",
+    if (!products || products.length === 0) {
+      return res.status(404).send({
+        message: "No products found",
       });
     }
+
+    res.status(200).send(products);
   } catch (err) {
-    res.send({
-      message: err.message || "Failed!",
+    res.status(500).send({
+      message: err.message || "Error retrieving products",
     });
   }
 };

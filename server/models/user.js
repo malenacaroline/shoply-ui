@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+export default (sequelize, Sequelize) => {
   const User = sequelize.define(
     "user",
     {
@@ -24,13 +24,13 @@ module.exports = (sequelize, Sequelize) => {
       type: {
         type: Sequelize.ENUM('common', 'vip'),
         allowNull: false,
-        defaultValue: "common",
+        defaultValue: 'common'
       },
       discounts: {
         type: Sequelize.ARRAY(Sequelize.ENUM('get3For2Discount', 'vipDiscount')),
         allowNull: false,
         defaultValue: [],
-      },
+      }
     },
     {
       sequelize,
@@ -39,7 +39,7 @@ module.exports = (sequelize, Sequelize) => {
     }
   );
 
-  User.associate = (models) => {
+  User.associate = function(models) {
     User.hasOne(models.Cart, {
       foreignKey: 'userId',
       as: 'cart'

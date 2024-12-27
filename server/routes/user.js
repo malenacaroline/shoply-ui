@@ -1,7 +1,6 @@
-const controller = require("../controllers/user");
+import * as controller from '../controllers/user.js';
 
-module.exports = (router) => {
+export default (router) => {
   router.route("/users").get(controller.getAll);
-  router.route("/users").post(controller.create);
   router.route("/users/login").post(controller.login);
 };

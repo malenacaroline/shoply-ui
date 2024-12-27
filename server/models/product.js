@@ -1,5 +1,5 @@
-module.exports = (sequelize, Sequelize) => {
-  return sequelize.define(
+export default (sequelize, Sequelize) => {
+  const Product = sequelize.define(
     "product",
     {
       id: {
@@ -16,6 +16,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.FLOAT,
         allowNull: false,
       },
+      image: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: 'shopping-bag.jpg'
+      }
     },
     {
       sequelize,
@@ -23,4 +28,13 @@ module.exports = (sequelize, Sequelize) => {
       timestamps: false,
     }
   );
+
+  Product.associate = function(models) {
+    Product.hasMany(models.CartItem, {
+      foreignKey: 'productId',
+      as: 'cartItems'
+    });
+  };
+
+  return Product;
 };
