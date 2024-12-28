@@ -1,9 +1,13 @@
 import db from "../models/index.js";
 import bcrypt from "bcrypt";
-import user from "../models/user.js";
 
 const seedDatabase = async () => {
   try {
+    // Clear the database
+    await db.sequelize.truncate({ cascade: true });
+
+    // Create users
+
     const hashedPassword = await bcrypt.hash("12345", 10);
     const users = await db.User.bulkCreate([
       {

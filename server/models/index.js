@@ -1,9 +1,9 @@
-import { Sequelize } from 'sequelize';
-import { config } from 'dotenv';
-import User from './user.js';
-import Product from './product.js';
-import Cart from './cart.js';
-import CartItem from './cartItem.js';
+import { Sequelize } from "sequelize";
+import { config } from "dotenv";
+import User from "./user.js";
+import Product from "./product.js";
+import Cart from "./cart.js";
+import CartItem from "./cartItem.js";
 
 config();
 

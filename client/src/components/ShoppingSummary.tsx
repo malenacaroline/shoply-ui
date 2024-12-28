@@ -31,10 +31,12 @@ const calculateGet3For2Discount = (cart: Cart["items"]) => {
   const discountStartCount = 3;
   if (numCartItems < discountStartCount) return 0;
 
-  const lowestPriceItem = cart.reduce((lowest, item) => {
-    if (!lowest) return item;
-    return item.price < lowest.price ? item : lowest;
-  }, null as CartItem | null);
+  const lowestPriceItem = cart
+    .filter((item) => Boolean(item.quantity))
+    .reduce((lowest, item) => {
+      if (!lowest) return item;
+      return item.price < lowest.price ? item : lowest;
+    }, null as CartItem | null);
 
   return lowestPriceItem ? lowestPriceItem.price : 0;
 };
@@ -103,7 +105,7 @@ export const ShoppingSummary = () => {
             />
           )}
         </Stack>
-        {!cart || cart.items.length === 0 ? (
+        {!cart || cart.total === 0 ? (
           <Stack>
             <Typography color="text.secondary" sx={{ mt: 2 }}>
               {`${
