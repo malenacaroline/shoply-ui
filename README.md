@@ -169,13 +169,3 @@ server/
 ### Cart Routes
 - `GET /api/carts/:userId`: Get cart by user.
 - `GET /api/carts/:cartId`: Get cart items by cart.
-
----
-
-## Future Enhancements
-- Tests (Did not have time to do it properly, so I decided not apply at this version)
-- User authentication (access token) and authorization.
-- Improved product search and filtering.
-- Real-time updates using WebSockets.
-- TypeScript in the backend code.
-
