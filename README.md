@@ -1,7 +1,7 @@
-# Shopping Cart Application
+# E-commerce Application (in progress)
 
 ## Overview
-The **Shopping Cart Application** is a full-stack web application that enables users to browse products, add them to their cart, and manage their shopping cart. The application consists of a React-based frontend and a Node.js backend, with a PostgreSQL database for data storage. It demonstrates modern development practices using TypeScript, Material-UI, Sequelize ORM, and REST APIs.
+The **E-commerce Application** is a full-stack web application that enables users to browse products, add them to their cart, and manage their shopping cart. The application consists of a React-based frontend and a Node.js backend, with a PostgreSQL database for data storage. It demonstrates modern development practices using TypeScript, Material-UI, Sequelize ORM, and REST APIs.
 
 ---
 

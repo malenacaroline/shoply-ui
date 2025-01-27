@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Button, Stack } from "@mui/material";
 import { AccountCircle, Store } from "@mui/icons-material";
 import { orange } from "@mui/material/colors";
 import { useAuth } from "../contexts";
-import { LoginForm } from "./index";
+import { Login } from "./index";
 
 export const Header = () => {
   const { user, logout, setLoginError } = useAuth();
@@ -20,7 +20,7 @@ export const Header = () => {
         <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
           <Store />
           <Typography variant="h6" component="div" sx={{ ml: 1 }}>
-            MyShop
+            Shoply
           </Typography>
         </Stack>
         {user ? (
@@ -47,7 +47,7 @@ export const Header = () => {
             Login
           </Button>
         )}
-        <LoginForm isOpen={showLoginForm} onClose={closeModal} />
+        <Login isOpen={showLoginForm} onClose={closeModal} />
       </Toolbar>
     </AppBar>
   );

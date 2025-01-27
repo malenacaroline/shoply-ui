@@ -12,7 +12,7 @@ export const Footer = () => {
         color={brown[600]}
         align="center"
       >
-        © {new Date().getFullYear()} MyShop. All rights reserved.
+        © {new Date().getFullYear()} Shoply. All rights reserved.
       </Typography>
     </Box>
   );
